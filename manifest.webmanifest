@@ -1,0 +1,9 @@
+{
+  "name": "LiftLog Workout Tracker",
+  "short_name": "LiftLog",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f4f6f3",
+  "theme_color": "#101a18",
+  "icons": []
+}

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101a18">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="LiftLog">
+<link rel="manifest" href="manifest.webmanifest">
+<title>LiftLog — Workout Tracker</title>
+<style>
+:root{--bg:#f4f6f3;--card:#fff;--ink:#18231f;--muted:#738078;--line:#e7ece8;--green:#244c3c;--green2:#e8f0eb;--accent:#d9e8dd;--shadow:0 5px 20px rgba(26,49,37,.055)}
+*{box-sizing:border-box}html{background:var(--bg)}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:var(--bg);padding-bottom:calc(86px + env(safe-area-inset-bottom))}
+button,input{font:inherit}button{cursor:pointer}.app{max-width:560px;margin:0 auto;min-height:100vh}
+header{background:#101a18;color:white;padding:calc(18px + env(safe-area-inset-top)) 20px 22px;border-radius:0 0 24px 24px}
+.topline{display:flex;align-items:center;justify-content:space-between}.brand{font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#a8c1b2;font-weight:750}.week-pill{font-size:12px;background:#263a32;color:#dce9e1;padding:8px 11px;border-radius:20px}
+h1{font-size:28px;line-height:1.1;margin:19px 0 7px;letter-spacing:-.7px}.sub{font-size:14px;color:#b6c3bc;margin:0}
+main{padding:18px 16px 30px}.section-head{display:flex;justify-content:space-between;align-items:center;margin:8px 2px 12px}.section-head h2{font-size:17px;margin:0;letter-spacing:-.2px}.muted{font-size:12px;color:var(--muted)}
+.day-strip{display:flex;gap:8px;overflow-x:auto;padding:2px 1px 12px;scrollbar-width:none}.day-strip::-webkit-scrollbar{display:none}.day{border:1px solid var(--line);background:#fff;color:#657269;border-radius:13px;min-width:58px;padding:10px 7px;text-align:center}.day b{display:block;font-size:12px}.day span{font-size:10px;display:block;margin-top:4px}.day.active{background:var(--green);border-color:var(--green);color:white}
+.summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:4px 0 18px}.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px 14px}.stat strong{font-size:22px;display:block;letter-spacing:-.5px}.stat span{font-size:11px;color:var(--muted)}
+.exercise{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:15px;margin-bottom:10px;box-shadow:var(--shadow)}.exercise-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.exercise-name{font-weight:720;font-size:15px;line-height:1.25}.target{font-size:11px;color:var(--muted);margin-top:5px}.set-tag{white-space:nowrap;background:var(--green2);color:var(--green);font-size:11px;font-weight:700;padding:6px 8px;border-radius:9px}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:13px}.field label{display:block;font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.7px;text-transform:uppercase;margin:0 0 5px 2px}.field input{width:100%;border:1px solid var(--line);border-radius:11px;background:#f8faf8;padding:11px 10px;font-size:16px;color:var(--ink);outline:none}.field input:focus{border-color:#779b86;background:#fff}
+.last{font-size:11px;color:var(--muted);margin-top:9px}.done{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:12px;color:#5b6b61}.done input{accent-color:var(--green);width:17px;height:17px}
+.action-row{display:flex;gap:9px;margin:15px 0}.primary,.secondary{border:0;border-radius:13px;padding:13px 15px;font-weight:700;font-size:13px}.primary{background:var(--green);color:white;flex:1}.secondary{background:#e9efeb;color:var(--green)}
+.panel{background:white;border:1px solid var(--line);border-radius:17px;padding:15px;margin-bottom:12px}.panel h3{font-size:14px;margin:0 0 12px}.week-select{display:flex;align-items:center;gap:8px}.week-select select{flex:1;border:1px solid var(--line);border-radius:10px;padding:10px;background:#f8faf8;font-size:14px}
+.progress-row{margin:12px 0}.progress-label{display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px}.bar{height:7px;background:#edf1ee;border-radius:8px;overflow:hidden}.bar i{display:block;height:100%;background:#527b63;border-radius:8px}
+.nav{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.96);backdrop-filter:blur(16px);border-top:1px solid var(--line);padding:10px 18px calc(10px + env(safe-area-inset-bottom));display:flex;justify-content:center;z-index:5}.nav-inner{max-width:560px;width:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.nav button{border:0;background:transparent;color:#87928b;padding:7px 4px;border-radius:12px;font-size:11px;font-weight:650}.nav button.active{background:var(--green2);color:var(--green)}.nav .ico{font-size:18px;display:block;margin-bottom:3px}
+.view{display:none}.view.active{display:block}.empty{padding:25px 15px;text-align:center;color:var(--muted);font-size:13px}
+.note{font-size:11px;color:var(--muted);line-height:1.5;margin:10px 2px}.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#1d3027;color:white;padding:11px 16px;border-radius:22px;font-size:12px;opacity:0;pointer-events:none;transition:.2s;z-index:10}.toast.show{opacity:1}
+@media(min-width:600px){body{padding-top:18px}.app{border-radius:25px;overflow:hidden;box-shadow:0 10px 50px rgba(0,0,0,.08);background:var(--bg)}header{border-radius:0 0 24px 24px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+ <div class="topline"><div class="brand">LIFTLOG</div><div class="week-pill" id="headerWeek">WEEK 1 OF 8</div></div>
+ <h1 id="heroTitle">Monday · Upper A</h1><p class="sub" id="heroSub">Build strength. Track every rep.</p>
+</header>
+<main>
+ <section class="view active" id="workoutView">
+  <div class="section-head"><h2>Your week</h2><span class="muted">Tap a day to switch</span></div>
+  <div class="day-strip" id="days"></div>
+  <div class="summary"><div class="stat"><strong id="exerciseCount">7</strong><span>Exercises today</span></div><div class="stat"><strong id="completedCount">0/7</strong><span>Marked complete</span></div></div>
+  <div class="section-head"><h2 id="workoutHeading">Upper A</h2><span class="muted" id="workoutType">STRENGTH</span></div>
+  <div id="exerciseList"></div>
+  <div class="action-row"><button class="secondary" id="copyLast">Copy last week</button><button class="primary" id="saveWorkout">Save workout</button></div>
+  <p class="note">Log the weight you used and reps completed. For dumbbells, enter the weight of one dumbbell. For assisted pull-ups, record the assistance weight.</p>
+ </section>
+ <section class="view" id="progressView">
+  <div class="section-head"><h2>Progress</h2><span class="muted">Your lifting history</span></div>
+  <div class="panel"><h3>Training week</h3><div class="week-select"><select id="progressWeek"></select></div><p class="note">Your entries are saved on this device in this browser.</p></div>
+  <div class="panel"><h3>Exercise progress</h3><div id="progressList"></div></div>
+  <div class="panel"><h3>Weekly consistency</h3><div id="consistency"></div></div>
+ </section>
+ <section class="view" id="planView">
+  <div class="section-head"><h2>Your training plan</h2><span class="muted">4 lifts + 1 cardio</span></div>
+  <div id="planList"></div>
+  <div class="panel"><h3>Training notes</h3><p class="note">Start conservatively after time away from the gym. Choose weights that leave about 1–3 good reps in reserve. Add weight only when you can complete all prescribed reps with solid form. Stop if you feel sharp pain.</p></div>
+  <button class="secondary" style="width:100%" id="exportData">Export my workout data</button>
+  <p class="note">Export creates a backup file you can keep or move to another device.</p>
+ </section>
+</main>
+<nav class="nav"><div class="nav-inner">
+ <button class="active" data-view="workoutView"><span class="ico">＋</span>Workout</button>
+ <button data-view="progressView"><span class="ico">↗</span>Progress</button>
+ <button data-view="planView"><span class="ico">▤</span>Plan</button>
+</div></nav>
+<div class="toast" id="toast">Saved</div>
+</div>
+<script>
+const plan = [
+ {day:"Mon",title:"Monday · Upper A",name:"Upper A",type:"STRENGTH",items:[["Bench press","3 × 8–10"],["Lat pulldowns","3 × 10"],["Incline dumbbell press","3 × 10"],["Seated cable rows","3 × 10"],["Lateral raises","3 × 12–15"],["Tricep pushdowns","2 × 12"],["Dumbbell curls","2 × 12"]]},
+ {day:"Tue",title:"Tuesday · Lower A",name:"Lower A",type:"STRENGTH",items:[["Leg press","3 × 10"],["Leg extensions","3 × 12"],["Seated hamstring curls","3 × 12"],["Glute machine kickbacks","3 × 12"],["Calf raises","3 × 15"],["Planks","3 × 45 sec"]]},
+ {day:"Wed",title:"Wednesday · Cardio",name:"Cardio & Recovery",type:"CARDIO",items:[["Incline treadmill","25 min"],["Stair stepper","10–15 min"],["Stretching","10 min"]]},
+ {day:"Thu",title:"Thursday · Upper B",name:"Upper B",type:"STRENGTH",items:[["Pull-ups / assisted pull-ups","3 × 8"],["Dumbbell shoulder press","3 × 10"],["Chest-supported rows","3 × 10"],["Cable fly","3 × 12"],["Rear delt fly","3 × 12"],["Hammer curls","2 × 12"],["Overhead tricep extensions","2 × 12"]]},
+ {day:"Fri",title:"Friday · Lower B",name:"Lower B",type:"STRENGTH",items:[["Seated hamstring curls","3 × 12"],["Walking lunges","3 × 10 each leg"],["Hip thrusts","3 × 10"],["Leg extensions","2 × 12"],["Hip abductor machine","3 × 15"],["Hanging knee raises","3 × 12"]]},
+ {day:"Sat",title:"Saturday · Optional",name:"Optional activity",type:"OPTIONAL",items:[]},
+ {day:"Sun",title:"Sunday · Rest",name:"Rest day",type:"RECOVERY",items:[]}
+];
+let selectedDay = Math.max(0, Math.min(4, (new Date().getDay()+6)%7));
+let week = 1;
+let data = {};
+try { data = JSON.parse(localStorage.getItem("liftlogData") || "{}"); } catch(e) { data = {}; }
+const key = (w,d,i) => `${w}-${d}-${i}`;
+const $ = id => document.getElementById(id);
+function save(){localStorage.setItem("liftlogData",JSON.stringify(data));}
+function showToast(msg="Saved"){const t=$("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1500);}
+function renderDays(){
+ $("days").innerHTML=plan.map((p,i)=>`<button class="day ${i===selectedDay?'active':''}" data-day="${i}"><b>${p.day}</b><span>${["Upper A","Lower A","Cardio","Upper B","Lower B","Optional","Rest"][i]}</span></button>`).join("");
+ document.querySelectorAll(".day").forEach(b=>b.onclick=()=>{selectedDay=+b.dataset.day;renderWorkout();});
+}
+function renderWorkout(){
+ const p=plan[selectedDay];$("heroTitle").textContent=p.title;$("heroSub").textContent=p.type==="CARDIO"?"Move well. Recover well.":p.type==="RECOVERY"?"Take the day to recover.":"Build strength. Track every rep.";
+ $("workoutHeading").textContent=p.name;$("workoutType").textContent=p.type;$("headerWeek").textContent=`WEEK ${week} OF 8`;
+ renderDays();
+ if(!p.items.length){$("exerciseCount").textContent="—";$("completedCount").textContent="—";$("exerciseList").innerHTML=`<div class="panel empty">${selectedDay===5?"Enjoy an optional walk, bike ride, golf, or other activity.":"Rest and recover. You’ve earned it."}</div>`;$("copyLast").disabled=true;return;}
+ $("copyLast").disabled=false;$("exerciseCount").textContent=p.items.length;
+ $("exerciseList").innerHTML=p.items.map((it,i)=>{
+  const v=data[key(week,selectedDay,i)]||{};const prev=data[key(week-1,selectedDay,i)]||{};
+  const unit=selectedDay===2?"Minutes":"Weight";const repsLabel=selectedDay===2?"Time / notes":"Reps completed";
+  return `<article class="exercise"><div class="exercise-top"><div><div class="exercise-name">${it[0]}</div><div class="target">Target: ${it[1]}</div></div><span class="set-tag">${selectedDay===2?"CARDIO":it[1].split(" × ")[0]+" sets"}</span></div>
+  <div class="fields"><div class="field"><label>${unit}</label><input inputmode="decimal" placeholder="${selectedDay===2?"e.g. 25 min":"e.g. 135 lb"}" data-field="weight" data-index="${i}" value="${v.weight||""}"></div><div class="field"><label>${repsLabel}</label><input inputmode="text" placeholder="${selectedDay===2?"Incline / pace":"e.g. 10, 10, 8"}" data-field="reps" data-index="${i}" value="${v.reps||""}"></div></div>
+  <div class="last">${prev.weight||prev.reps?`Last week: ${prev.weight||"—"} · ${prev.reps||"—"}`:"No previous entry"}</div>
+  <label class="done"><input type="checkbox" data-done="${i}" ${v.done?"checked":""}> Mark complete</label></article>`;
+ }).join("");
+ document.querySelectorAll("[data-field]").forEach(inp=>inp.addEventListener("change",()=>{const i=+inp.dataset.index;data[key(week,selectedDay,i)]??={};data[key(week,selectedDay,i)][inp.dataset.field]=inp.value;save();updateCounts();}));
+ document.querySelectorAll("[data-done]").forEach(inp=>inp.onchange=()=>{const i=+inp.dataset.done;data[key(week,selectedDay,i)]??={};data[key(week,selectedDay,i)].done=inp.checked;save();updateCounts();});
+ updateCounts();
+}
+function updateCounts(){const p=plan[selectedDay];if(!p.items.length)return;let n=p.items.filter((_,i)=>data[key(week,selectedDay,i)]?.done).length;$("completedCount").textContent=`${n}/${p.items.length}`;}
+$("saveWorkout").onclick=()=>{save();showToast("Workout saved");};
+$("copyLast").onclick=()=>{if(week<=1){showToast("No previous week yet");return;}const p=plan[selectedDay];p.items.forEach((_,i)=>{const old=data[key(week-1,selectedDay,i)];if(old)data[key(week,selectedDay,i)]={...old,done:false};});save();renderWorkout();showToast("Last week copied");};
+function fillWeeks(){const opts=Array.from({length:8},(_,i)=>`<option value="${i+1}">Week ${i+1} of 8</option>`).join("");$("progressWeek").innerHTML=opts;}
+$("progressWeek").onchange=()=>{week=+$("progressWeek").value;$("headerWeek").textContent=`WEEK ${week} OF 8`;renderWorkout();renderProgress();};
+function renderProgress(){
+ const w=+$("progressWeek").value||week;const all=plan.flatMap((p,d)=>p.items.map((it,i)=>({name:it[0],d,i})));
+ $("progressList").innerHTML=all.map(x=>{const cur=data[key(w,x.d,x.i)]||{};const prev=data[key(w-1,x.d,x.i)]||{};return `<div class="progress-row"><div class="progress-label"><b>${x.name}</b><span>${cur.weight||"—"} ${cur.reps?"/ "+cur.reps:""}</span></div><div class="muted">Previous: ${prev.weight||"—"} ${prev.reps?"/ "+prev.reps:""}</div></div>`;}).join("");
+ const total=plan.slice(0,5).reduce((n,p,d)=>n+p.items.filter((_,i)=>data[key(w,d,i)]?.done).length,0);const max=plan.slice(0,5).reduce((n,p)=>n+p.items.length,0);
+ $("consistency").innerHTML=`<div class="progress-label"><b>Exercises completed</b><b>${total} / ${max}</b></div><div class="bar"><i style="width:${max?total/max*100:0}%"></i></div><p class="note">Mark exercises complete on the Workout tab to update this total.</p>`;
+}
+function renderPlan(){
+ $("planList").innerHTML=plan.map((p,i)=>`<div class="panel"><div class="exercise-top"><h3 style="margin:0">${p.title}</h3><span class="set-tag">${p.type}</span></div>${p.items.length?`<div style="margin-top:10px">${p.items.map(x=>`<div class="progress-label" style="padding:7px 0;border-bottom:1px solid var(--line)"><span>${x[0]}</span><b>${x[1]}</b></div>`).join("")}</div>`:`<p class="note">${i===5?"Optional light activity":"Full rest day"}</p>`}</div>`).join("");
+}
+document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".view").forEach(x=>x.classList.toggle("active",x.id===b.dataset.view));if(b.dataset.view==="progressView")renderProgress();if(b.dataset.view==="planView")renderPlan();});
+$("exportData").onclick=()=>{const blob=new Blob([JSON.stringify({plan,data},null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="liftlog-backup.json";a.click();URL.revokeObjectURL(url);showToast("Backup exported");};
+fillWeeks();$("progressWeek").value=week;renderWorkout();renderProgress();renderPlan();
+if("serviceWorker" in navigator && location.protocol.startsWith("http"))window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+</script>
+</body></html>
